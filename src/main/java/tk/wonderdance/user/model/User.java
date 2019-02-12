@@ -9,22 +9,33 @@ import java.util.Set;
 
 @Entity
 @Table(name = "user")
-public class User {
+public class User extends DateAudit{
     @Id
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "email")
     @NotNull
     @NotBlank
-    private String name;
+    private String email;
+
+    @Column(name = "first_name")
+    @NotNull
+    @NotBlank
+    private String firstName;
+
+    @Column(name = "last_name")
+    @NotNull
+    @NotBlank
+    private String lastName;
 
     @Column(name = "nick_name")
-    @NotBlank
     private String nickName;
 
-    @NotBlank
     @Column(name = "dob")
     private Instant dob;
+
+    @Column(name = "gender")
+    private char gender;
 
     @Column(name = "profile_picture")
     private String profilePicture;
@@ -35,31 +46,24 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "achievement_id"))
     private Set<Achievement> achievements = new HashSet<>();
 
-    @NotBlank
     @Column(name = "street")
     private String street;
 
-    @NotBlank
     @Column(name = "city")
     private String city;
 
-    @NotBlank
     @Column(name = "state")
     private String state;
 
-    @NotBlank
     @Column(name = "country")
     private String country;
 
-    @NotBlank
-    @Column(name = "zipcode")
-    private int zipCode;
+    @Column(name = "zipcode", length = 20)
+    private String zipCode;
 
-    @NotBlank
     @Column(name = "dance_genre")
     private DanceGenreName danceGenre;
 
-    @NotBlank
     @Column(name = "dance_crew")
     private String danceCrew;
 
@@ -76,8 +80,14 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "following_id"))
     private Set<User> followings = new HashSet<>();
 
-    public User(Long id) {
+    public User(Long id, String email, String firstName, String lastName) {
         this.id = id;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public User() {
     }
 
     public Long getId() {
@@ -88,12 +98,20 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getNickName() {
@@ -152,11 +170,11 @@ public class User {
         this.country = country;
     }
 
-    public int getZipCode() {
+    public String getZipCode() {
         return zipCode;
     }
 
-    public void setZipCode(int zipCode) {
+    public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
 
@@ -198,5 +216,21 @@ public class User {
 
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
+    }
+
+    public char getGender() {
+        return gender;
+    }
+
+    public void setGender(char gender) {
+        this.gender = gender;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
