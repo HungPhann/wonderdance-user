@@ -14,6 +14,8 @@ import tk.wonderdance.user.payload.user.follow.FollowUserFailResponse;
 import tk.wonderdance.user.payload.user.follow.FollowUserSuccessResponse;
 import tk.wonderdance.user.payload.user.get_user.GetUserFailResponse;
 import tk.wonderdance.user.payload.user.get_user.GetUserSuccessResponse;
+import tk.wonderdance.user.payload.user.unfollow.UnfollowUserFailResponse;
+import tk.wonderdance.user.payload.user.unfollow.UnfollowUserSuccessResponse;
 import tk.wonderdance.user.repository.UserRepository;
 import tk.wonderdance.user.payload.user.create.CreateUserFailResponse;
 import tk.wonderdance.user.payload.user.create.CreateUserSuccessResponse;
@@ -92,6 +94,7 @@ public class UserController {
             try {
                 Optional<User> followingUserQuery = userRepository.findUserById(followingUserId);
                 User followingUser = followingUserQuery.get();
+
                 followerUser.getFollowings().add(followingUser);
                 followingUser.getFollowers().add(followerUser);
 
@@ -124,6 +127,55 @@ public class UserController {
 
             FollowUserFailResponse followUserFailResponse = new FollowUserFailResponse(success, error_code, message);
             return ResponseEntity.ok(followUserFailResponse);
+        }
+    }
+
+
+    @RequestMapping(value = "{user_id}/unfollow", method = RequestMethod.POST)
+    public ResponseEntity<?> unfollowUser(@PathVariable("user_id") long user_id,
+                                        @RequestParam("following_user_id") long followingUserId){
+
+        try {
+
+            Optional<User> followerUserQuery = userRepository.findUserById(user_id);
+            User followerUser = followerUserQuery.get();
+
+            try {
+                Optional<User> followingUserQuery = userRepository.findUserById(followingUserId);
+                User followingUser = followingUserQuery.get();
+
+                followerUser.getFollowings().remove(followingUser);
+                followingUser.getFollowers().remove(followerUser);
+
+                try {
+                    followUserTransaction.saveUsers(followerUser, followingUser);
+
+                    boolean success = true;
+
+                    UnfollowUserSuccessResponse unfollowUserSuccessResponse = new UnfollowUserSuccessResponse(success);
+                    return ResponseEntity.ok(unfollowUserSuccessResponse);
+                }
+                catch (Exception e){
+                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            }
+            catch (NoSuchElementException e){
+                boolean success = false;
+                int error_code = 2;
+                String message = "Following User ID does not exist";
+
+                UnfollowUserFailResponse unfollowUserFailResponse = new UnfollowUserFailResponse(success, error_code, message);
+                return ResponseEntity.ok(unfollowUserFailResponse);
+            }
+
+        }
+        catch (NoSuchElementException e){
+            boolean success = false;
+            int error_code = 1;
+            String message = "Follower User ID does not exist";
+
+            UnfollowUserFailResponse unfollowUserFailResponse = new UnfollowUserFailResponse(success, error_code, message);
+            return ResponseEntity.ok(unfollowUserFailResponse);
         }
     }
 
