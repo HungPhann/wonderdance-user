@@ -171,7 +171,7 @@ public class User extends DateAudit{
         return map;
     }
 
-    private static Set<Long> getUserIds(Set<User> users){
+    public static Set<Long> getUserIds(Set<User> users){
         Set<Long> userIDs = new HashSet<>();
 
         for (User user : users){

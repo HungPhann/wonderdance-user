@@ -12,6 +12,10 @@ import tk.wonderdance.user.helper.FollowUserTransaction;
 import tk.wonderdance.user.model.User;
 import tk.wonderdance.user.payload.user.follow.FollowUserFailResponse;
 import tk.wonderdance.user.payload.user.follow.FollowUserSuccessResponse;
+import tk.wonderdance.user.payload.user.follower_list.FollowerListFailResponse;
+import tk.wonderdance.user.payload.user.follower_list.FollowerListSuccessResponse;
+import tk.wonderdance.user.payload.user.following_list.FollowingListFailResponse;
+import tk.wonderdance.user.payload.user.following_list.FollowingListSuccessResponse;
 import tk.wonderdance.user.payload.user.get_user.GetUserFailResponse;
 import tk.wonderdance.user.payload.user.get_user.GetUserSuccessResponse;
 import tk.wonderdance.user.payload.user.unfollow.UnfollowUserFailResponse;
@@ -20,10 +24,7 @@ import tk.wonderdance.user.repository.UserRepository;
 import tk.wonderdance.user.payload.user.create.CreateUserFailResponse;
 import tk.wonderdance.user.payload.user.create.CreateUserSuccessResponse;
 
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping("/user")
@@ -179,4 +180,48 @@ public class UserController {
         }
     }
 
+    @RequestMapping(value = "{user_id}/followers", method = RequestMethod.GET)
+    public ResponseEntity<?> getFollowers(@PathVariable("user_id") long userID){
+
+        try {
+            Optional<User> userQuery = userRepository.findUserById(userID);
+            User user= userQuery.get();
+            boolean success = true;
+            Set<Long> userIDs = User.getUserIds(user.getFollowers());
+
+            FollowerListSuccessResponse followerListSuccessResponse = new FollowerListSuccessResponse(success, userIDs);
+            return ResponseEntity.ok(followerListSuccessResponse);
+        }
+        catch (NoSuchElementException e){
+            boolean success = false;
+            int error_code = 1;
+            String message = "User ID does not exist";
+
+            FollowerListFailResponse followerListFailResponse = new FollowerListFailResponse(success, error_code, message);
+            return ResponseEntity.ok(followerListFailResponse);
+        }
+    }
+
+
+    @RequestMapping(value = "{user_id}/followings", method = RequestMethod.GET)
+    public ResponseEntity<?> getFollowings(@PathVariable("user_id") long userID){
+
+        try {
+            Optional<User> userQuery = userRepository.findUserById(userID);
+            User user= userQuery.get();
+            boolean success = true;
+            Set<Long> userIDs = User.getUserIds(user.getFollowings());
+
+            FollowingListSuccessResponse followingListSuccessResponse = new FollowingListSuccessResponse(success, userIDs);
+            return ResponseEntity.ok(followingListSuccessResponse);
+        }
+        catch (NoSuchElementException e){
+            boolean success = false;
+            int error_code = 1;
+            String message = "User ID does not exist";
+
+            FollowingListFailResponse followingListFailResponse = new FollowingListFailResponse(success, error_code, message);
+            return ResponseEntity.ok(followingListFailResponse);
+        }
+    }
 }
