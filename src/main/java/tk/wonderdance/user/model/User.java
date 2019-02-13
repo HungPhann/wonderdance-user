@@ -4,8 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "user")
@@ -35,7 +34,7 @@ public class User extends DateAudit{
     private Instant dob;
 
     @Column(name = "gender")
-    private char gender;
+    private char gender = 'U';
 
     @Column(name = "profile_picture")
     private String profilePicture;
@@ -88,6 +87,97 @@ public class User extends DateAudit{
     }
 
     public User() {
+    }
+
+    public Map<String, Object> getInformation(List<String> attributes){
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        for(String attribute : attributes){
+            switch (attribute){
+                case "email":
+                    map.put("email", email);
+                    break;
+
+                case "first_name":
+                    map.put("first_name", firstName);
+                    break;
+
+                case "last_name":
+                    map.put("last_name", lastName);
+                    break;
+
+                case "nick_name":
+                    map.put("nick_name", nickName);
+                    break;
+
+                case "dob":
+                    map.put("dob", dob);
+                    break;
+
+                case "gender":
+                    map.put("gender", gender);
+                    break;
+
+                case "profile_picture":
+                    map.put("profile_picture", profilePicture);
+                    break;
+
+                case "achievements":
+                    map.put("achievements", achievements);
+                    break;
+
+                case "street":
+                    map.put("street", street);
+                    break;
+
+                case "city":
+                    map.put("city", city);
+                    break;
+
+                case "state":
+                    map.put("state", state);
+                    break;
+
+                case "country":
+                    map.put("country", country);
+                    break;
+
+                case "zip_code":
+                    map.put("zip_code", zipCode);
+                    break;
+
+                case "dance_genre":
+                    map.put("dance_genre", danceGenre);
+                    break;
+
+                case "dance_crew":
+                    map.put("dance_crew", danceCrew);
+                    break;
+
+                case "followers":
+                    map.put("followers", getUserIds(followers));
+                    break;
+
+                case "followings":
+                    map.put("followings", getUserIds(followings));
+                    break;
+
+                default:
+                    break;
+            }
+
+        }
+
+        return map;
+    }
+
+    private static Set<Long> getUserIds(Set<User> users){
+        Set<Long> userIDs = new HashSet<>();
+
+        for (User user : users){
+            userIDs.add(user.getId());
+        }
+        return userIDs;
     }
 
     public Long getId() {

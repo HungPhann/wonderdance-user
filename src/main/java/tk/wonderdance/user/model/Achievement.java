@@ -27,6 +27,10 @@ public class Achievement {
         this.competition = competition;
     }
 
+    public Achievement(){
+
+    }
+
     public Long getId() {
         return id;
     }
