@@ -91,6 +91,7 @@ public class User extends DateAudit{
 
     public Map<String, Object> getInformation(List<String> attributes){
         Map<String, Object> map = new HashMap<String, Object>();
+        map.put("user_id", id);
 
         for(String attribute : attributes){
             switch (attribute){

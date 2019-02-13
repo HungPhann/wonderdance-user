@@ -18,6 +18,7 @@ import tk.wonderdance.user.payload.user.following_list.FollowingListFailResponse
 import tk.wonderdance.user.payload.user.following_list.FollowingListSuccessResponse;
 import tk.wonderdance.user.payload.user.get_user.GetUserFailResponse;
 import tk.wonderdance.user.payload.user.get_user.GetUserSuccessResponse;
+import tk.wonderdance.user.payload.user.get_users.GetUsersSuccessResponse;
 import tk.wonderdance.user.payload.user.unfollow.UnfollowUserFailResponse;
 import tk.wonderdance.user.payload.user.unfollow.UnfollowUserSuccessResponse;
 import tk.wonderdance.user.repository.UserRepository;
@@ -81,6 +82,35 @@ public class UserController {
             GetUserFailResponse getUserFailResponse = new GetUserFailResponse(success, error_code, message);
             return ResponseEntity.ok(getUserFailResponse);
         }
+    }
+
+    @RequestMapping(value = "information", method = RequestMethod.GET)
+    public ResponseEntity<?> getUsers(@RequestParam("user_ids") Set<Long> userIDs,
+                                     @RequestParam("required_data") List<String> requiredData){
+
+
+
+        List<User> users = new LinkedList<User>();
+        for (Long userID : userIDs){
+            try {
+                User user = userRepository.findUserById(userID).get();
+                ((LinkedList<User>) users).addFirst(user);
+            }
+            catch (NoSuchElementException e){
+                //do nothing
+            }
+        }
+
+        Set<Map<String, Object>> data = new HashSet<>();
+
+        for (User user : users){
+            Map<String, Object> userInfor = user.getInformation(requiredData);
+
+            data.add(userInfor);
+        }
+
+        GetUsersSuccessResponse getUsersSuccessResponse = new GetUsersSuccessResponse(true, data);
+        return ResponseEntity.ok(getUsersSuccessResponse);
     }
 
     @RequestMapping(value = "{user_id}/follow", method = RequestMethod.POST)
