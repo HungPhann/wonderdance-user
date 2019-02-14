@@ -33,8 +33,8 @@ public class FollowController {
     @Autowired
     FollowUserTransaction followUserTransaction;
 
-    @RequestMapping(value = "/follow/{user_id}", method = RequestMethod.POST)
-    public ResponseEntity<?> followUser(@PathVariable("user_id") long user_id,
+    @RequestMapping(value = "/follow", method = RequestMethod.POST)
+    public ResponseEntity<?> followUser(@RequestParam("follower_user_id") long user_id,
                                         @RequestParam("following_user_id") long followingUserId){
 
         try {
@@ -82,8 +82,8 @@ public class FollowController {
     }
 
 
-    @RequestMapping(value = "/unfollow/{user_id}", method = RequestMethod.POST)
-    public ResponseEntity<?> unfollowUser(@PathVariable("user_id") long user_id,
+    @RequestMapping(value = "/unfollow", method = RequestMethod.POST)
+    public ResponseEntity<?> unfollowUser(@RequestParam("follower_user_id") long user_id,
                                           @RequestParam("following_user_id") long followingUserId){
 
         try {
