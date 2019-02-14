@@ -1,12 +1,12 @@
-package tk.wonderdance.user.payload.user.get_user;
+package tk.wonderdance.user.payload.user.update;
 
-public class GetUserFailResponse {
+public class UpdateUserFailResponse {
 
     private boolean success;
     private int error_code;
     private String message;
 
-    public GetUserFailResponse(boolean success, int error_code, String message) {
+    public UpdateUserFailResponse(boolean success, int error_code, String message) {
         this.success = success;
         this.error_code = error_code;
         this.message = message;

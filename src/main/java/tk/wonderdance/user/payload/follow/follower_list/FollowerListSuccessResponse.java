@@ -1,13 +1,13 @@
-package tk.wonderdance.user.payload.user.following_list;
+package tk.wonderdance.user.payload.follow.follower_list;
 
 import java.util.Set;
 
-public class FollowingListSuccessResponse {
+public class FollowerListSuccessResponse {
 
     private boolean success;
     private Set<Long> user_ids;
 
-    public FollowingListSuccessResponse(boolean success, Set<Long> user_ids) {
+    public FollowerListSuccessResponse(boolean success, Set<Long> user_ids) {
         this.success = success;
         this.user_ids = user_ids;
     }

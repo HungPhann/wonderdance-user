@@ -1,12 +1,12 @@
-package tk.wonderdance.user.payload.user.follow;
+package tk.wonderdance.user.payload.follow.follower_list;
 
-public class FollowUserFailResponse {
+public class FollowerListFailResponse {
 
     private boolean success;
     private int error_code;
     private String message;
 
-    public FollowUserFailResponse(boolean success, int error_code, String message) {
+    public FollowerListFailResponse(boolean success, int error_code, String message) {
         this.success = success;
         this.error_code = error_code;
         this.message = message;

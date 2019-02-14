@@ -1,4 +1,4 @@
-package tk.wonderdance.user.payload.user.get_user;
+package tk.wonderdance.user.payload.user.get;
 
 import java.util.Map;
 

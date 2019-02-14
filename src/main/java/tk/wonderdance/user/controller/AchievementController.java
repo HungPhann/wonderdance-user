@@ -16,12 +16,9 @@ import tk.wonderdance.user.payload.achievement.delete.DeleteAchievementFailRespo
 import tk.wonderdance.user.payload.achievement.delete.DeleteAchievementSuccessResponse;
 import tk.wonderdance.user.payload.achievement.update.UpdateAchievementFailResponse;
 import tk.wonderdance.user.payload.achievement.update.UpdateAchievementSuccessResponse;
-import tk.wonderdance.user.payload.user.get_user.GetUserFailResponse;
-import tk.wonderdance.user.payload.user.get_user.GetUserSuccessResponse;
 import tk.wonderdance.user.repository.AchievementRepository;
 import tk.wonderdance.user.repository.UserRepository;
 
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 

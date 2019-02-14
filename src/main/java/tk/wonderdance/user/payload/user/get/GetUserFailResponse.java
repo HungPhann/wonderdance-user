@@ -1,12 +1,12 @@
-package tk.wonderdance.user.payload.user.unfollow;
+package tk.wonderdance.user.payload.user.get;
 
-public class UnfollowUserFailResponse {
+public class GetUserFailResponse {
 
     private boolean success;
     private int error_code;
     private String message;
 
-    public UnfollowUserFailResponse(boolean success, int error_code, String message) {
+    public GetUserFailResponse(boolean success, int error_code, String message) {
         this.success = success;
         this.error_code = error_code;
         this.message = message;

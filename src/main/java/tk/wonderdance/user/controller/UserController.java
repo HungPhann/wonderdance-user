@@ -3,19 +3,18 @@ package tk.wonderdance.user.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import tk.wonderdance.user.helper.FollowUserTransaction;
 import tk.wonderdance.user.model.User;
-import tk.wonderdance.user.payload.user.get_user.GetUserFailResponse;
-import tk.wonderdance.user.payload.user.get_user.GetUserSuccessResponse;
-import tk.wonderdance.user.payload.user.get_users.GetUsersSuccessResponse;
+import tk.wonderdance.user.payload.user.get.GetUserFailResponse;
+import tk.wonderdance.user.payload.user.get.GetUserSuccessResponse;
+import tk.wonderdance.user.payload.user.update.UpdateUserFailResponse;
+import tk.wonderdance.user.payload.user.update.UpdateUserSuccessResponse;
 import tk.wonderdance.user.repository.UserRepository;
 import tk.wonderdance.user.payload.user.create.CreateUserFailResponse;
 import tk.wonderdance.user.payload.user.create.CreateUserSuccessResponse;
 
+import javax.xml.ws.Response;
 import java.util.*;
 
 @Controller
@@ -75,4 +74,28 @@ public class UserController {
         }
     }
 
+
+    @RequestMapping(value = "{user_id}", method = RequestMethod.PUT)
+    public ResponseEntity<?> updateUser(@PathVariable("user_id") long userID,
+                                        @RequestParam Map<String, Object> data){
+
+        try {
+            Optional<User> userQuery = userRepository.findUserById(userID);
+            User user= userQuery.get();
+            boolean success = true;
+            user.updateInformation(data);
+            userRepository.save(user);
+
+            UpdateUserSuccessResponse updateUserSuccessResponse = new UpdateUserSuccessResponse(success);
+            return ResponseEntity.ok(updateUserSuccessResponse);
+        }
+        catch (NoSuchElementException e){
+            boolean success = false;
+            int error_code = 1;
+            String message = "User ID does not exist";
+
+            UpdateUserFailResponse updateUserFailResponse = new UpdateUserFailResponse(success, error_code, message);
+            return ResponseEntity.ok(updateUserFailResponse);
+        }
+    }
 }

@@ -1,9 +1,15 @@
 package tk.wonderdance.user.model;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Entity
@@ -31,7 +37,7 @@ public class User extends DateAudit{
     private String nickName;
 
     @Column(name = "dob")
-    private Instant dob;
+    private Date dob;
 
     @Column(name = "gender")
     private char gender = 'U';
@@ -113,7 +119,8 @@ public class User extends DateAudit{
                     break;
 
                 case "dob":
-                    map.put("dob", dob);
+                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    map.put("dob", dateFormat.format(dob));
                     break;
 
                 case "gender":
@@ -181,6 +188,69 @@ public class User extends DateAudit{
         return map;
     }
 
+    public void updateInformation(Map<String, Object> data){
+        for(String key : data.keySet()){
+            switch (key){
+                case "first_name":
+                    this.firstName = (String) data.get(key);
+                    break;
+
+                case "last_name":
+                    this.lastName = (String) data.get(key);
+                    break;
+
+                case "nick_name":
+                    this.nickName = (String) data.get(key);
+                    break;
+
+                case "dob":
+                    try {
+                        this.dob = new SimpleDateFormat("dd/MM/yyyy").parse((String) data.get(key));
+                    }
+                    catch (ParseException e){}
+                    break;
+
+                case "gender":
+                    this.gender = (char) data.get(key);
+                    break;
+
+                case "street":
+                    this.street = (String) data.get(key);
+                    break;
+
+                case "city":
+                    this.city = (String) data.get(key);
+                    break;
+
+                case "state":
+                    this.state = (String) data.get(key);
+                    break;
+
+                case "country":
+                    this.country = (String) data.get(key);
+                    break;
+
+                case "zip_code":
+                    this.zipCode = (String) data.get(key);
+                    break;
+
+                case "dance_genre":
+                    try {
+                        this.danceGenre = DanceGenreName.valueOf((String) data.get(key));
+                    }
+                    catch (IllegalArgumentException e){}
+                    break;
+
+                case "dance_crew":
+                    this.danceCrew = (String) data.get(key);
+                    break;
+
+                default:
+                    break;
+          }
+        }
+    }
+
     public static Set<Long> getUserIds(Set<User> users){
         Set<Long> userIDs = new HashSet<>();
 
@@ -232,11 +302,11 @@ public class User extends DateAudit{
         this.nickName = nickName;
     }
 
-    public Instant getDob() {
+    public Date getDob() {
         return dob;
     }
 
-    public void setDob(Instant dob) {
+    public void setDob(Date dob) {
         this.dob = dob;
     }
 

@@ -1,4 +1,4 @@
-package tk.wonderdance.user.payload.user.unfollow;
+package tk.wonderdance.user.payload.follow.unfollow;
 
 public class UnfollowUserSuccessResponse {
 

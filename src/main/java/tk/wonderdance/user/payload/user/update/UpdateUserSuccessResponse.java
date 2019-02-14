@@ -1,10 +1,10 @@
-package tk.wonderdance.user.payload.user.follow;
+package tk.wonderdance.user.payload.user.update;
 
-public class FollowUserSuccessResponse {
+public class UpdateUserSuccessResponse {
 
     private boolean success;
 
-    public FollowUserSuccessResponse(boolean success) {
+    public UpdateUserSuccessResponse(boolean success) {
         this.success = success;
     }
 
