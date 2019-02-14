@@ -12,6 +12,8 @@ import tk.wonderdance.user.model.DanceGenreName;
 import tk.wonderdance.user.model.User;
 import tk.wonderdance.user.payload.achievement.create.CreateAchievementFailResponse;
 import tk.wonderdance.user.payload.achievement.create.CreateAchievementSuccessResponse;
+import tk.wonderdance.user.payload.achievement.delete.DeleteAchievementFailResponse;
+import tk.wonderdance.user.payload.achievement.delete.DeleteAchievementSuccessResponse;
 import tk.wonderdance.user.payload.user.get_user.GetUserFailResponse;
 import tk.wonderdance.user.payload.user.get_user.GetUserSuccessResponse;
 import tk.wonderdance.user.repository.AchievementRepository;
@@ -58,6 +60,42 @@ public class AchievementController {
 
             CreateAchievementFailResponse createAchievementFailResponse = new CreateAchievementFailResponse(success, error_code, message);
             return ResponseEntity.ok(createAchievementFailResponse);
+        }
+    }
+
+
+    @RequestMapping(value = "{achievement_id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteAchievement(@PathVariable("user_id") long userID,
+                                               @PathVariable("achievement_id") long achivementID){
+        try {
+
+            Optional<Achievement> achievementQuery = achievementRepository.findAchievementById(achivementID);
+            Achievement achievement = achievementQuery.get();
+
+            if(!(userID == achievement.getUser().getId())){
+                boolean success = false;
+                int error_code = 2;
+                String message = "Achievement ID  and User ID does not match";
+
+                DeleteAchievementFailResponse deleteAchievementFailResponse = new DeleteAchievementFailResponse(success, error_code, message);
+                return ResponseEntity.ok(deleteAchievementFailResponse);
+            }
+            else {
+                achievementRepository.delete(achievement);
+
+                boolean success = true;
+                DeleteAchievementSuccessResponse deleteAchievementSuccessResponse = new DeleteAchievementSuccessResponse(success);
+                return ResponseEntity.ok(deleteAchievementSuccessResponse);
+            }
+
+        }
+        catch (NoSuchElementException e){
+            boolean success = false;
+            int error_code = 1;
+            String message = "Achievement ID does not exist";
+
+            DeleteAchievementFailResponse deleteAchievementFailResponse = new DeleteAchievementFailResponse(success, error_code, message);
+            return ResponseEntity.ok(deleteAchievementFailResponse);
         }
     }
 }
