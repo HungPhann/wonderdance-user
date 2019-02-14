@@ -38,11 +38,12 @@ public class User extends DateAudit{
 
     @Column(name = "profile_picture")
     private String profilePicture;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_achievements",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "achievement_id"))
+//
+//    @OneToMany(fetch = FetchType.LAZY)
+//    @JoinTable(name = "user_achievements",
+//            joinColumns = @JoinColumn(name = "user_id"),
+//            inverseJoinColumns = @JoinColumn(name = "achievement_id"))
+    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
     private Set<Achievement> achievements = new HashSet<>();
 
     @Column(name = "street")
@@ -124,7 +125,7 @@ public class User extends DateAudit{
                     break;
 
                 case "achievements":
-                    map.put("achievements", achievements);
+                    map.put("achievements", getAchievementJson(achievements));
                     break;
 
                 case "street":
@@ -159,8 +160,16 @@ public class User extends DateAudit{
                     map.put("followers", getUserIds(followers));
                     break;
 
+                case "number_of_followers":
+                    map.put("number_of_followers", followers.size());
+                    break;
+
                 case "followings":
                     map.put("followings", getUserIds(followings));
+                    break;
+
+                case "number_of_followings":
+                    map.put("number_of_followings", followings.size());
                     break;
 
                 default:
@@ -179,6 +188,16 @@ public class User extends DateAudit{
             userIDs.add(user.getId());
         }
         return userIDs;
+    }
+
+
+    public static Set<Map<String, Object>> getAchievementJson(Set<Achievement> achievements){
+        Set<Map<String, Object>> set = new HashSet<>();
+
+        for (Achievement achievement : achievements){
+            set.add(achievement.toJson());
+        }
+        return set;
     }
 
     public Long getId() {
