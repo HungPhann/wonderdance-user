@@ -119,8 +119,13 @@ public class User extends DateAudit{
                     break;
 
                 case "dob":
-                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                    map.put("dob", dateFormat.format(dob));
+                    try {
+                        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                        map.put("dob", dateFormat.format(dob));
+                    } catch (NullPointerException e){
+                        map.put("dob", dob);
+                    }
+
                     break;
 
                 case "gender":
