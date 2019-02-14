@@ -14,6 +14,8 @@ import tk.wonderdance.user.payload.achievement.create.CreateAchievementFailRespo
 import tk.wonderdance.user.payload.achievement.create.CreateAchievementSuccessResponse;
 import tk.wonderdance.user.payload.achievement.delete.DeleteAchievementFailResponse;
 import tk.wonderdance.user.payload.achievement.delete.DeleteAchievementSuccessResponse;
+import tk.wonderdance.user.payload.achievement.update.UpdateAchievementFailResponse;
+import tk.wonderdance.user.payload.achievement.update.UpdateAchievementSuccessResponse;
 import tk.wonderdance.user.payload.user.get_user.GetUserFailResponse;
 import tk.wonderdance.user.payload.user.get_user.GetUserSuccessResponse;
 import tk.wonderdance.user.repository.AchievementRepository;
@@ -96,6 +98,50 @@ public class AchievementController {
 
             DeleteAchievementFailResponse deleteAchievementFailResponse = new DeleteAchievementFailResponse(success, error_code, message);
             return ResponseEntity.ok(deleteAchievementFailResponse);
+        }
+    }
+
+
+    @RequestMapping(value = "{achievement_id}", method = RequestMethod.PUT)
+    public ResponseEntity<?> updateAchievement(@PathVariable("user_id") long userID,
+                                               @PathVariable("achievement_id") long achivementID,
+                                               @RequestParam("title") String title,
+                                               @RequestParam("dance_genre") DanceGenreName danceGenre,
+                                               @RequestParam("competition") String competition,
+                                               @RequestParam("year") int year){
+        try {
+
+            Optional<Achievement> achievementQuery = achievementRepository.findAchievementById(achivementID);
+            Achievement achievement = achievementQuery.get();
+
+            if(!(userID == achievement.getUser().getId())){
+                boolean success = false;
+                int error_code = 2;
+                String message = "Achievement ID  and User ID does not match";
+
+                UpdateAchievementFailResponse updateAchievementFailResponse = new UpdateAchievementFailResponse(success, error_code, message);
+                return ResponseEntity.ok(updateAchievementFailResponse);
+            }
+            else {
+                achievement.setTitle(title);
+                achievement.setDanceGenre(danceGenre);
+                achievement.setCompetition(competition);
+                achievement.setYear(year);
+                achievementRepository.save(achievement);
+
+                boolean success = true;
+                UpdateAchievementSuccessResponse updateAchievementSuccessResponse = new UpdateAchievementSuccessResponse(success);
+                return ResponseEntity.ok(updateAchievementSuccessResponse);
+            }
+
+        }
+        catch (NoSuchElementException e){
+            boolean success = false;
+            int error_code = 1;
+            String message = "Achievement ID does not exist";
+
+            UpdateAchievementFailResponse updateAchievementFailResponse = new UpdateAchievementFailResponse(success, error_code, message);
+            return ResponseEntity.ok(updateAchievementFailResponse);
         }
     }
 }
