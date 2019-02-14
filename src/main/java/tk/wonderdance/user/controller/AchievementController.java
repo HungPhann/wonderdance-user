@@ -35,7 +35,7 @@ public class AchievementController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<?> createAchievement(@PathVariable("user_id") long userID,
                                                @RequestParam("title") String title,
-                                               @RequestParam("dance_genre") DanceGenreName danceGenre,
+                                               @RequestParam("dance_genre") String danceGenre,
                                                @RequestParam("competition") String competition,
                                                @RequestParam("year") int year){
 
@@ -44,7 +44,7 @@ public class AchievementController {
             User user= userQuery.get();
 
             boolean success = true;
-            Achievement achievement = new Achievement(title, danceGenre, competition, year, user);
+            Achievement achievement = new Achievement(title, DanceGenreName.valueOf(danceGenre), competition, year, user);
             achievementRepository.save(achievement);
             user.getAchievements().add(achievement);
             userRepository.save(user);
@@ -56,6 +56,14 @@ public class AchievementController {
             boolean success = false;
             int error_code = 1;
             String message = "User ID does not exist";
+
+            CreateAchievementFailResponse createAchievementFailResponse = new CreateAchievementFailResponse(success, error_code, message);
+            return ResponseEntity.ok(createAchievementFailResponse);
+        }
+        catch (IllegalArgumentException e){
+            boolean success = false;
+            int error_code = 2;
+            String message = "Dance Genre is invalid";
 
             CreateAchievementFailResponse createAchievementFailResponse = new CreateAchievementFailResponse(success, error_code, message);
             return ResponseEntity.ok(createAchievementFailResponse);
@@ -103,7 +111,7 @@ public class AchievementController {
     public ResponseEntity<?> updateAchievement(@PathVariable("user_id") long userID,
                                                @PathVariable("achievement_id") long achivementID,
                                                @RequestParam("title") String title,
-                                               @RequestParam("dance_genre") DanceGenreName danceGenre,
+                                               @RequestParam("dance_genre") String danceGenre,
                                                @RequestParam("competition") String competition,
                                                @RequestParam("year") int year){
         try {
@@ -121,7 +129,7 @@ public class AchievementController {
             }
             else {
                 achievement.setTitle(title);
-                achievement.setDanceGenre(danceGenre);
+                achievement.setDanceGenre(DanceGenreName.valueOf(danceGenre));
                 achievement.setCompetition(competition);
                 achievement.setYear(year);
                 achievementRepository.save(achievement);
@@ -136,6 +144,14 @@ public class AchievementController {
             boolean success = false;
             int error_code = 1;
             String message = "Achievement ID does not exist";
+
+            UpdateAchievementFailResponse updateAchievementFailResponse = new UpdateAchievementFailResponse(success, error_code, message);
+            return ResponseEntity.ok(updateAchievementFailResponse);
+        }
+        catch (IllegalArgumentException e) {
+            boolean success = false;
+            int error_code = 1;
+            String message = "Dance Genre is invalid";
 
             UpdateAchievementFailResponse updateAchievementFailResponse = new UpdateAchievementFailResponse(success, error_code, message);
             return ResponseEntity.ok(updateAchievementFailResponse);
