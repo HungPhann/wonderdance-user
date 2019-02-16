@@ -22,8 +22,6 @@ import tk.wonderdance.user.helper.aws_s3.service.S3Services;
 @Service
 public class S3ServicesImpl implements S3Services {
 
-    private Logger logger = LoggerFactory.getLogger(S3ServicesImpl.class);
-
     @Autowired
     private AmazonS3 s3client;
 
@@ -34,15 +32,12 @@ public class S3ServicesImpl implements S3Services {
     public void downloadFile(String keyName) throws AmazonServiceException, AmazonClientException{
         System.out.println("Downloading an object");
         S3Object s3object = s3client.getObject(new GetObjectRequest(bucketName, keyName));
-        logger.info("===================== Import File - Done! =====================");
-
     }
 
 
     @Override
     public void uploadFile(String keyName, File uploadFile) throws AmazonServiceException, AmazonClientException{
         s3client.putObject(new PutObjectRequest(bucketName, keyName, uploadFile));
-        logger.info("===================== Upload File - Done! =====================");
     }
 
 
@@ -51,7 +46,6 @@ public class S3ServicesImpl implements S3Services {
         File file = convertMultiPartToFile(uploadFile);
         s3client.putObject(new PutObjectRequest(bucketName, keyName, file));
         file.delete();
-        logger.info("===================== Upload File - Done! =====================");
     }
 
 

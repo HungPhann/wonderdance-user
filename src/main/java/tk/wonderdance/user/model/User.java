@@ -193,7 +193,7 @@ public class User extends DateAudit{
         return map;
     }
 
-    public void updateInformation(Map<String, Object> data){
+    public void updateInformation(Map<String, Object> data) throws Exception{
         for(String key : data.keySet()){
             switch (key){
                 case "first_name":
@@ -240,10 +240,7 @@ public class User extends DateAudit{
                     break;
 
                 case "dance_genre":
-                    try {
-                        this.danceGenre = DanceGenreName.valueOf((String) data.get(key));
-                    }
-                    catch (IllegalArgumentException e){}
+                    this.danceGenre = DanceGenreName.valueOf((String) data.get(key));
                     break;
 
                 case "dance_crew":

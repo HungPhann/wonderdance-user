@@ -1,11 +1,11 @@
 package tk.wonderdance.user.payload.achievement.create;
 
-public class CreateAchievementSuccessResponse {
+public class CreateAchievementResponse {
 
     private boolean success;
     private long achievement_id;
 
-    public CreateAchievementSuccessResponse(boolean success, long achievement_id) {
+    public CreateAchievementResponse(boolean success, long achievement_id) {
         this.success = success;
         this.achievement_id = achievement_id;
     }

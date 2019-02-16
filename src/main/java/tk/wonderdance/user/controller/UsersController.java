@@ -6,8 +6,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import tk.wonderdance.user.model.User;
-import tk.wonderdance.user.payload.users.get.GetUsersSuccessResponse;
+import tk.wonderdance.user.payload.users.get.GetUsersResponse;
 import tk.wonderdance.user.repository.UserRepository;
 
 import java.util.*;
@@ -21,7 +22,7 @@ public class UsersController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<?> getUsers(@RequestParam("user_ids") Set<Long> userIDs,
-                                      @RequestParam("required_data") List<String> requiredData){
+                                      @RequestParam("required_data") List<String> requiredData) throws MethodArgumentTypeMismatchException {
 
 
 
@@ -44,7 +45,7 @@ public class UsersController {
             data.add(userInfor);
         }
 
-        GetUsersSuccessResponse getUsersSuccessResponse = new GetUsersSuccessResponse(true, data);
-        return ResponseEntity.ok(getUsersSuccessResponse);
+        GetUsersResponse getUsersResponse = new GetUsersResponse(true, data);
+        return ResponseEntity.ok(getUsersResponse);
     }
 }

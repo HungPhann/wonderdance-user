@@ -1,7 +1,5 @@
 package tk.wonderdance.user.controller;
 
-import com.amazonaws.AmazonClientException;
-import com.amazonaws.AmazonServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -11,7 +9,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MultipartFile;
+import tk.wonderdance.user.exception.exception.UserNotFoundException;
 import tk.wonderdance.user.helper.aws_s3.service.S3Services;
 import tk.wonderdance.user.model.User;
 import tk.wonderdance.user.payload.profile_picture.update.UpdateProfilePictureResponse;
@@ -21,7 +21,7 @@ import java.util.NoSuchElementException;
 
 @Controller
 @RequestMapping("user/{user_id}/profile-picture")
-public class ProfileController {
+public class ProfilePictureController {
 
     @Autowired
     UserRepository userRepository;
@@ -35,7 +35,7 @@ public class ProfileController {
 
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<?> uploadProfilePicture(@PathVariable("user_id") long userID,
-                                                  @RequestParam("profile_picture")MultipartFile profilePicture){
+                                                  @RequestParam("profile_picture")MultipartFile profilePicture) throws MethodArgumentTypeMismatchException, UserNotFoundException{
 
         try{
             User user = userRepository.findUserById(userID).get();
@@ -50,15 +50,7 @@ public class ProfileController {
             return ResponseEntity.ok(updateProfilePictureResponse);
         }
         catch (NoSuchElementException e){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        catch (AmazonServiceException e){
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        catch (AmazonClientException e){
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new UserNotFoundException("Cannot find User with user_id=" + userID);
         }
         catch (Exception e){
             e.printStackTrace();

@@ -1,10 +1,10 @@
 package tk.wonderdance.user.payload.user.update;
 
-public class UpdateUserSuccessResponse {
+public class UpdateUserResponse {
 
     private boolean success;
 
-    public UpdateUserSuccessResponse(boolean success) {
+    public UpdateUserResponse(boolean success) {
         this.success = success;
     }
 

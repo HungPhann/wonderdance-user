@@ -1,20 +1,20 @@
 package tk.wonderdance.user.controller;
 
+import com.amazonaws.services.lambda.model.ResourceConflictException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import tk.wonderdance.user.exception.exception.CustomMethodArgumentTypeMismatchException;
+import tk.wonderdance.user.exception.exception.UserNotFoundException;
 import tk.wonderdance.user.helper.FollowUserTransaction;
 import tk.wonderdance.user.model.User;
-import tk.wonderdance.user.payload.user.get.GetUserFailResponse;
-import tk.wonderdance.user.payload.user.get.GetUserSuccessResponse;
-import tk.wonderdance.user.payload.user.update.UpdateUserFailResponse;
-import tk.wonderdance.user.payload.user.update.UpdateUserSuccessResponse;
+import tk.wonderdance.user.payload.user.get.GetUserResponse;
+import tk.wonderdance.user.payload.user.update.UpdateUserResponse;
 import tk.wonderdance.user.repository.UserRepository;
-import tk.wonderdance.user.payload.user.create.CreateUserFailResponse;
-import tk.wonderdance.user.payload.user.create.CreateUserSuccessResponse;
+import tk.wonderdance.user.payload.user.create.CreateUserResponse;
 
-import javax.xml.ws.Response;
 import java.util.*;
 
 @Controller
@@ -31,53 +31,44 @@ public class UserController {
     public ResponseEntity<?> createUser(@RequestParam("user_id") Long userID,
                                            @RequestParam("email") String email,
                                            @RequestParam("first_name") String firstName,
-                                           @RequestParam("last_name") String lastName) {
+                                           @RequestParam("last_name") String lastName) throws MethodArgumentTypeMismatchException, ResourceConflictException, tk.wonderdance.user.exception.exception.ResourceConflictException {
 
         if (userRepository.existsByIdOrEmail(userID, email)) {
-            boolean success = false;
-            int error_code = 1;
-            String message = "User ID or Email already existed";
+            throw new tk.wonderdance.user.exception.exception.ResourceConflictException("User existed with user_id=" + userID + " or email=" + email);
 
-            CreateUserFailResponse createUserFailResponse = new CreateUserFailResponse(success, error_code, message);
-            return ResponseEntity.ok(createUserFailResponse);
         } else {
             User user = new User(userID, email, firstName, lastName);
             userRepository.save(user);
 
             boolean success = true;
-            CreateUserSuccessResponse createUserSuccessResponse = new CreateUserSuccessResponse(success);
-            return ResponseEntity.ok(createUserSuccessResponse);
+            CreateUserResponse createUserResponse = new CreateUserResponse(success);
+            return ResponseEntity.ok(createUserResponse);
         }
     }
 
     @RequestMapping(value = "{user_id}", method = RequestMethod.GET)
-    public ResponseEntity<?> getUser(@PathVariable("user_id") long user_id,
-                                     @RequestParam("required_data") List<String> requiredData){
+    public ResponseEntity<?> getUser(@PathVariable("user_id") long userID,
+                                     @RequestParam("required_data") List<String> requiredData) throws MethodArgumentTypeMismatchException, UserNotFoundException {
 
-        Optional<User> userQuery = userRepository.findUserById(user_id);
+        Optional<User> userQuery = userRepository.findUserById(userID);
 
         try {
             User user= userQuery.get();
             boolean success = true;
             Map<String, Object> data = user.getInformation(requiredData);
 
-            GetUserSuccessResponse getUserSuccessResponse = new GetUserSuccessResponse(success, data);
-            return ResponseEntity.ok(getUserSuccessResponse);
+            GetUserResponse getUserResponse = new GetUserResponse(success, data);
+            return ResponseEntity.ok(getUserResponse);
         }
         catch (NoSuchElementException e){
-            boolean success = false;
-            int error_code = 1;
-            String message = "User ID does not exist";
-
-            GetUserFailResponse getUserFailResponse = new GetUserFailResponse(success, error_code, message);
-            return ResponseEntity.ok(getUserFailResponse);
+            throw new UserNotFoundException("Cannot find User with user_id=" + userID);
         }
     }
 
 
     @RequestMapping(value = "{user_id}", method = RequestMethod.PUT)
     public ResponseEntity<?> updateUser(@PathVariable("user_id") long userID,
-                                        @RequestParam Map<String, Object> data){
+                                        @RequestParam Map<String, Object> data) throws MethodArgumentTypeMismatchException, UserNotFoundException, CustomMethodArgumentTypeMismatchException{
 
         try {
             Optional<User> userQuery = userRepository.findUserById(userID);
@@ -86,16 +77,14 @@ public class UserController {
             user.updateInformation(data);
             userRepository.save(user);
 
-            UpdateUserSuccessResponse updateUserSuccessResponse = new UpdateUserSuccessResponse(success);
-            return ResponseEntity.ok(updateUserSuccessResponse);
+            UpdateUserResponse updateUserResponse = new UpdateUserResponse(success);
+            return ResponseEntity.ok(updateUserResponse);
         }
         catch (NoSuchElementException e){
-            boolean success = false;
-            int error_code = 1;
-            String message = "User ID does not exist";
-
-            UpdateUserFailResponse updateUserFailResponse = new UpdateUserFailResponse(success, error_code, message);
-            return ResponseEntity.ok(updateUserFailResponse);
+            throw new UserNotFoundException("Cannot find User with user_id=" + userID);
+        }
+        catch (Exception e) {
+            throw new CustomMethodArgumentTypeMismatchException("");
         }
     }
 }

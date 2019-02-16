@@ -3,12 +3,12 @@ package tk.wonderdance.user.payload.users.get;
 import java.util.Map;
 import java.util.Set;
 
-public class GetUsersSuccessResponse {
+public class GetUsersResponse {
 
     private boolean success;
     private Set<Map<String, Object>> data;
 
-    public GetUsersSuccessResponse(boolean success, Set<Map<String, Object>> data) {
+    public GetUsersResponse(boolean success, Set<Map<String, Object>> data) {
         this.success = success;
         this.data = data;
     }

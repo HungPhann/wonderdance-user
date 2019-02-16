@@ -1,10 +1,10 @@
-package tk.wonderdance.user.payload.follow.unfollow;
+package tk.wonderdance.user.payload.achievement.delete;
 
-public class UnfollowUserSuccessResponse {
+public class DeleteAchievementResponse {
 
     private boolean success;
 
-    public UnfollowUserSuccessResponse(boolean success) {
+    public DeleteAchievementResponse(boolean success) {
         this.success = success;
     }
 

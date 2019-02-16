@@ -1,10 +1,10 @@
-package tk.wonderdance.user.payload.achievement.update;
+package tk.wonderdance.user.payload.user.create;
 
-public class UpdateAchievementSuccessResponse {
+public class CreateUserResponse {
 
     private boolean success;
 
-    public UpdateAchievementSuccessResponse(boolean success) {
+    public CreateUserResponse(boolean success) {
         this.success = success;
     }
 
