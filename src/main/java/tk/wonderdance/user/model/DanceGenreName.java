@@ -11,5 +11,5 @@ public enum DanceGenreName {
     WAACKING,
     FREESTYLE,
     JAZZ,
-
+    DANCE_SPORT
 }
