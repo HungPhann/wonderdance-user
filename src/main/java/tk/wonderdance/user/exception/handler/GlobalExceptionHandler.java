@@ -37,16 +37,16 @@ public class GlobalExceptionHandler {
     @ResponseStatus(value= HttpStatus.FORBIDDEN, reason="Permission Denied")  // 403
     @ExceptionHandler(ForbiddenException.class)
     public void handleForbiddenException(HttpServletRequest request, ForbiddenException e){
-        logger.info("[AchievementNotFoundException] " + e.getMessage() + " at: " + request.getRequestURL());
+        logger.info("[ForbiddenException] " + e.getMessage() + " at: " + request.getRequestURL());
     }
 
-    @ResponseStatus(value = HttpStatus.CONFLICT, reason = "Resource has existed")
+    @ResponseStatus(value = HttpStatus.CONFLICT, reason = "Resource has existed")   // 409
     @ExceptionHandler(ResourceConflictException.class)
     public void handleResourceConflictException(HttpServletRequest request, ResourceConflictException e){
         logger.info("[ResourceConflictException] " + e.getMessage() + " at: " + request.getRequestURL());
     }
 
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Parameter value is invalid")
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Parameter value is invalid")  // 400
     @ExceptionHandler(CustomMethodArgumentTypeMismatchException.class)
     public void handleCustomMethodArgumentTypeMismatchException(HttpServletRequest request, CustomMethodArgumentTypeMismatchException e){
         logger.info("[CustomMethodArgumentTypeMismatchException] " + e.getMessage() + " at: " + request.getRequestURL());
