@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 import tk.wonderdance.user.exception.exception.UserNotFoundException;
 import tk.wonderdance.user.helper.aws_s3.service.S3Services;
@@ -35,7 +36,7 @@ public class ProfilePictureController {
 
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<?> uploadProfilePicture(@PathVariable("user_id") long userID,
-                                                  @RequestParam("profile_picture")MultipartFile profilePicture) throws MethodArgumentTypeMismatchException, UserNotFoundException{
+                                                  @RequestParam("profile_picture")MultipartFile profilePicture) throws MethodArgumentTypeMismatchException, UserNotFoundException, MaxUploadSizeExceededException {
 
         try{
             User user = userRepository.findUserById(userID).get();
@@ -46,7 +47,7 @@ public class ProfilePictureController {
             user.setProfilePicture(image_url);
             userRepository.save(user);
 
-            UpdateProfilePictureResponse updateProfilePictureResponse = new UpdateProfilePictureResponse(true, image_url);
+            UpdateProfilePictureResponse updateProfilePictureResponse = new UpdateProfilePictureResponse(image_url);
             return ResponseEntity.ok(updateProfilePictureResponse);
         }
         catch (NoSuchElementException e){

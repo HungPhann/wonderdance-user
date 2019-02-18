@@ -2,27 +2,17 @@ package tk.wonderdance.user.payload.profile_picture.update;
 
 public class UpdateProfilePictureResponse {
 
-    private boolean success;
-    private String url;
+    private String profile_picture;
 
-    public UpdateProfilePictureResponse(boolean success, String url) {
-        this.success = success;
-        this.url = url;
+    public UpdateProfilePictureResponse(String profile_picture) {
+        this.profile_picture = profile_picture;
     }
 
-    public boolean isSuccess() {
-        return success;
+    public String getProfile_picture() {
+        return profile_picture;
     }
 
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
+    public void setProfile_picture(String profile_picture) {
+        this.profile_picture = profile_picture;
     }
 }

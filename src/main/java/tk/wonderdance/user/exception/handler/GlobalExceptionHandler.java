@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import tk.wonderdance.user.exception.exception.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,5 +51,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomMethodArgumentTypeMismatchException.class)
     public void handleCustomMethodArgumentTypeMismatchException(HttpServletRequest request, CustomMethodArgumentTypeMismatchException e){
         logger.info("[CustomMethodArgumentTypeMismatchException] " + e.getMessage() + " at: " + request.getRequestURL());
+    }
+
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "profile_picture exceeds its maximum permitted size of 1048576 bytes")
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public void handleMaxUploadSizeExceededException(HttpServletRequest request){
+        logger.info("[MaxUploadSizeExceededException] at: " + request.getRequestURL());
     }
 }
