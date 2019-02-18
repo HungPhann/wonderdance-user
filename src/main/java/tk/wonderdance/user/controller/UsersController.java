@@ -45,7 +45,6 @@ public class UsersController {
             data.add(userInfor);
         }
 
-        GetUsersResponse getUsersResponse = new GetUsersResponse(true, data);
-        return ResponseEntity.ok(getUsersResponse);
+        return ResponseEntity.ok(data);
     }
 }

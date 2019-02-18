@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,9 +13,10 @@ import tk.wonderdance.user.exception.exception.CustomMethodArgumentTypeMismatchE
 import tk.wonderdance.user.exception.exception.UserNotFoundException;
 import tk.wonderdance.user.helper.FollowUserTransaction;
 import tk.wonderdance.user.model.User;
-import tk.wonderdance.user.payload.follow.follow.FollowUserSuccessResponse;
+import tk.wonderdance.user.payload.follow.follow.FollowUserRequest;
 import tk.wonderdance.user.repository.UserRepository;
 
+import javax.validation.Valid;
 import java.util.NoSuchElementException;
 
 @Controller
@@ -27,19 +29,17 @@ public class FollowController {
     FollowUserTransaction followUserTransaction;
 
     @RequestMapping(value = "/follow", method = RequestMethod.POST)
-    public ResponseEntity<?> followUser(@RequestParam("follower_user_id") long followerUserId,
-                                        @RequestParam("following_user_id") long followingUserId,
-                                        @RequestParam("follow") boolean follow) throws MethodArgumentTypeMismatchException, UserNotFoundException, CustomMethodArgumentTypeMismatchException {
+    public ResponseEntity<?> followUser(@Valid @RequestBody FollowUserRequest requestBody) throws MethodArgumentTypeMismatchException, UserNotFoundException, CustomMethodArgumentTypeMismatchException {
 
-        if(followerUserId == followingUserId){
+        if(requestBody.getFollower_user_id() == requestBody.getFollowing_user_id()){
             throw new CustomMethodArgumentTypeMismatchException("follower_user_id and following_user_id are identical");
         }
 
         try {
-            User followerUser = userRepository.findUserById(followerUserId).get();
-            User followingUser = userRepository.findUserById(followingUserId).get();
+            User followerUser = userRepository.findUserById(requestBody.getFollower_user_id()).get();
+            User followingUser = userRepository.findUserById(requestBody.getFollowing_user_id()).get();
 
-            if(follow){
+            if(requestBody.getFollow()){
                 return followUserHelper(followerUser, followingUser);
             }
             else {
@@ -59,10 +59,7 @@ public class FollowController {
             followingUser.getFollowers().add(followerUser);
             followUserTransaction.saveUsers(followerUser, followingUser);
 
-            boolean success = true;
-
-            FollowUserSuccessResponse followUserSuccessResponse = new FollowUserSuccessResponse(success);
-            return ResponseEntity.ok(followUserSuccessResponse);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
         catch (Exception e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -77,10 +74,7 @@ public class FollowController {
             followingUser.getFollowers().remove(followerUser);
             followUserTransaction.saveUsers(followerUser, followingUser);
 
-            boolean success = true;
-
-            FollowUserSuccessResponse followUserSuccessResponse = new FollowUserSuccessResponse(success);
-            return ResponseEntity.ok(followUserSuccessResponse);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
         catch (Exception e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
