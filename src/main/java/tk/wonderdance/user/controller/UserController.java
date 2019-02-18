@@ -66,17 +66,15 @@ public class UserController {
 
     @RequestMapping(value = "{user_id}", method = RequestMethod.PUT)
     public ResponseEntity<?> updateUser(@PathVariable("user_id") long userID,
-                                        @RequestParam Map<String, Object> data) throws MethodArgumentTypeMismatchException, UserNotFoundException, CustomMethodArgumentTypeMismatchException{
+                                        @RequestBody Map<String, Object> data) throws MethodArgumentTypeMismatchException, UserNotFoundException, CustomMethodArgumentTypeMismatchException{
 
         try {
             Optional<User> userQuery = userRepository.findUserById(userID);
             User user= userQuery.get();
-            boolean success = true;
             user.updateInformation(data);
             userRepository.save(user);
 
-            UpdateUserResponse updateUserResponse = new UpdateUserResponse(success);
-            return ResponseEntity.ok(updateUserResponse);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
         catch (NoSuchElementException e){
             throw new UserNotFoundException("Cannot find User with user_id=" + userID);
