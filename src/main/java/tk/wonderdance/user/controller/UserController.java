@@ -2,6 +2,7 @@ package tk.wonderdance.user.controller;
 
 import com.amazonaws.services.lambda.model.ResourceConflictException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -10,11 +11,13 @@ import tk.wonderdance.user.exception.exception.CustomMethodArgumentTypeMismatchE
 import tk.wonderdance.user.exception.exception.UserNotFoundException;
 import tk.wonderdance.user.helper.FollowUserTransaction;
 import tk.wonderdance.user.model.User;
+import tk.wonderdance.user.payload.user.create.CreateUserRequest;
 import tk.wonderdance.user.payload.user.get.GetUserResponse;
 import tk.wonderdance.user.payload.user.update.UpdateUserResponse;
 import tk.wonderdance.user.repository.UserRepository;
 import tk.wonderdance.user.payload.user.create.CreateUserResponse;
 
+import javax.validation.Valid;
 import java.util.*;
 
 @Controller
@@ -28,21 +31,16 @@ public class UserController {
     FollowUserTransaction followUserTransaction;
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity<?> createUser(@RequestParam("user_id") Long userID,
-                                           @RequestParam("email") String email,
-                                           @RequestParam("first_name") String firstName,
-                                           @RequestParam("last_name") String lastName) throws MethodArgumentTypeMismatchException, ResourceConflictException, tk.wonderdance.user.exception.exception.ResourceConflictException {
+    public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserRequest requestBody) throws MethodArgumentTypeMismatchException, ResourceConflictException, tk.wonderdance.user.exception.exception.ResourceConflictException {
 
-        if (userRepository.existsByIdOrEmail(userID, email)) {
-            throw new tk.wonderdance.user.exception.exception.ResourceConflictException("User existed with user_id=" + userID + " or email=" + email);
+        if (userRepository.existsByIdOrEmail(requestBody.getUser_id().longValue(), requestBody.getEmail())) {
+            throw new tk.wonderdance.user.exception.exception.ResourceConflictException("User existed with user_id=" + requestBody.getUser_id() + " or email=" + requestBody.getEmail());
 
         } else {
-            User user = new User(userID, email, firstName, lastName);
+            User user = new User(requestBody.getUser_id(), requestBody.getEmail(), requestBody.getFirst_name(), requestBody.getLast_name());
             userRepository.save(user);
 
-            boolean success = true;
-            CreateUserResponse createUserResponse = new CreateUserResponse(success);
-            return ResponseEntity.ok(createUserResponse);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
     }
 
