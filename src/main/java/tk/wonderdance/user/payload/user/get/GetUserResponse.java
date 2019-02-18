@@ -4,20 +4,10 @@ import java.util.Map;
 
 public class GetUserResponse {
 
-    private boolean success;
     private Map data;
 
-    public GetUserResponse(boolean success, Map data) {
-        this.success = success;
+    public GetUserResponse(Map data) {
         this.data = data;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
     }
 
     public Map getData() {

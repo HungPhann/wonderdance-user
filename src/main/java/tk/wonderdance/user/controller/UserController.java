@@ -52,11 +52,9 @@ public class UserController {
 
         try {
             User user= userQuery.get();
-            boolean success = true;
             Map<String, Object> data = user.getInformation(requiredData);
 
-            GetUserResponse getUserResponse = new GetUserResponse(success, data);
-            return ResponseEntity.ok(getUserResponse);
+            return ResponseEntity.ok(data);
         }
         catch (NoSuchElementException e){
             throw new UserNotFoundException("Cannot find User with user_id=" + userID);
