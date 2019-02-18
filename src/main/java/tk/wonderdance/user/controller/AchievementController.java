@@ -1,6 +1,7 @@
 package tk.wonderdance.user.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import tk.wonderdance.user.model.User;
 import tk.wonderdance.user.payload.achievement.create.CreateAchievementRequest;
 import tk.wonderdance.user.payload.achievement.create.CreateAchievementResponse;
 import tk.wonderdance.user.payload.achievement.delete.DeleteAchievementResponse;
+import tk.wonderdance.user.payload.achievement.update.UpdateAchievementRequest;
 import tk.wonderdance.user.payload.achievement.update.UpdateAchievementResponse;
 import tk.wonderdance.user.repository.AchievementRepository;
 import tk.wonderdance.user.repository.UserRepository;
@@ -68,9 +70,7 @@ public class AchievementController {
             else {
                 achievementRepository.delete(achievement);
 
-                boolean success = true;
-                DeleteAchievementResponse deleteAchievementResponse = new DeleteAchievementResponse(success);
-                return ResponseEntity.ok(deleteAchievementResponse);
+                return new ResponseEntity<>(HttpStatus.OK);
             }
         }
         catch (NoSuchElementException e){
@@ -82,10 +82,7 @@ public class AchievementController {
     @RequestMapping(value = "{achievement_id}", method = RequestMethod.PUT)
     public ResponseEntity<?> updateAchievement(@PathVariable("user_id") long userID,
                                                @PathVariable("achievement_id") long achievementID,
-                                               @RequestParam("title") String title,
-                                               @RequestParam("dance_genre") DanceGenreName danceGenre,
-                                               @RequestParam("competition") String competition,
-                                               @RequestParam("year") int year) throws MethodArgumentTypeMismatchException, AchievementNotFoundException, ForbiddenException{
+                                               @Valid @RequestBody UpdateAchievementRequest requestBody) throws MethodArgumentTypeMismatchException, AchievementNotFoundException, ForbiddenException{
         try {
 
             Optional<Achievement> achievementQuery = achievementRepository.findAchievementById(achievementID);
@@ -95,15 +92,13 @@ public class AchievementController {
                 throw new ForbiddenException("User with user_id=" + userID + "do not have permission to update Achievement with achievement_id=" + achievementID);
             }
             else {
-                achievement.setTitle(title);
-                achievement.setDanceGenre(danceGenre);
-                achievement.setCompetition(competition);
-                achievement.setYear(year);
+                achievement.setTitle(requestBody.getTitle());
+                achievement.setDanceGenre(requestBody.getDance_genre());
+                achievement.setCompetition(requestBody.getCompetition());
+                achievement.setYear(requestBody.getYear());
                 achievementRepository.save(achievement);
 
-                boolean success = true;
-                UpdateAchievementResponse updateAchievementResponse = new UpdateAchievementResponse(success);
-                return ResponseEntity.ok(updateAchievementResponse);
+                return new ResponseEntity<>(HttpStatus.OK);
             }
 
         }
