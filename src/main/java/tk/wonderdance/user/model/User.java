@@ -44,6 +44,9 @@ public class User extends DateAudit{
 
     @Column(name = "profile_picture")
     private String profilePicture;
+
+    @Column(name = "description")
+    private String description;
 //
 //    @OneToMany(fetch = FetchType.LAZY)
 //    @JoinTable(name = "user_achievements",
@@ -116,6 +119,10 @@ public class User extends DateAudit{
 
                 case "nick_name":
                     map.put("nick_name", nickName);
+                    break;
+
+                case "description":
+                    map.put("description", description);
                     break;
 
                 case "dob":
@@ -206,6 +213,10 @@ public class User extends DateAudit{
 
                 case "nick_name":
                     this.nickName = (String) data.get(key);
+                    break;
+
+                case "description":
+                    this.description = (String) data.get(key);
                     break;
 
                 case "dob":
@@ -414,5 +425,13 @@ public class User extends DateAudit{
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
