@@ -3,10 +3,7 @@ package tk.wonderdance.user.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import tk.wonderdance.user.exception.exception.AchievementNotFoundException;
 import tk.wonderdance.user.exception.exception.ForbiddenException;
@@ -14,12 +11,14 @@ import tk.wonderdance.user.exception.exception.UserNotFoundException;
 import tk.wonderdance.user.model.Achievement;
 import tk.wonderdance.user.model.DanceGenreName;
 import tk.wonderdance.user.model.User;
+import tk.wonderdance.user.payload.achievement.create.CreateAchievementRequest;
 import tk.wonderdance.user.payload.achievement.create.CreateAchievementResponse;
 import tk.wonderdance.user.payload.achievement.delete.DeleteAchievementResponse;
 import tk.wonderdance.user.payload.achievement.update.UpdateAchievementResponse;
 import tk.wonderdance.user.repository.AchievementRepository;
 import tk.wonderdance.user.repository.UserRepository;
 
+import javax.validation.Valid;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -35,22 +34,18 @@ public class AchievementController {
 
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<?> createAchievement(@PathVariable("user_id") long userID,
-                                               @RequestParam("title") String title,
-                                               @RequestParam("dance_genre") DanceGenreName danceGenre,
-                                               @RequestParam("competition") String competition,
-                                               @RequestParam("year") int year) throws UserNotFoundException, MethodArgumentTypeMismatchException {
+                                               @Valid @RequestBody CreateAchievementRequest requestBody) throws UserNotFoundException, MethodArgumentTypeMismatchException {
 
         try {
             Optional<User> userQuery = userRepository.findUserById(userID);
             User user= userQuery.get();
 
-            boolean success = true;
-            Achievement achievement = new Achievement(title, danceGenre, competition, year, user);
+            Achievement achievement = new Achievement(requestBody.getTitle(), requestBody.getDance_genre(), requestBody.getCompetition(), requestBody.getYear(), user);
             achievementRepository.save(achievement);
             user.getAchievements().add(achievement);
             userRepository.save(user);
 
-            CreateAchievementResponse createAchievementResponse = new CreateAchievementResponse(success, achievement.getId());
+            CreateAchievementResponse createAchievementResponse = new CreateAchievementResponse(achievement.getId());
             return ResponseEntity.ok(createAchievementResponse);
         }
         catch (NoSuchElementException e){
