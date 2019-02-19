@@ -1,6 +1,8 @@
 package tk.wonderdance.user.payload.user.create;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public class CreateUserRequest {
@@ -10,12 +12,16 @@ public class CreateUserRequest {
     private Long user_id;
 
     @NotNull
+    @Email
+    @NotBlank
     private String email;
 
     @NotNull
+    @NotBlank
     private String first_name;
 
     @NotNull
+    @NotBlank
     private String last_name;
 
     public CreateUserRequest(@NotNull Long user_id, @NotNull String email, @NotNull String first_name, @NotNull String last_name) {

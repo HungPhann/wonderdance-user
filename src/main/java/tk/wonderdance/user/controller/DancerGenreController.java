@@ -18,7 +18,6 @@ public class DancerGenreController {
     public ResponseEntity<?> getDanceGenreNames(){
 
         DanceGenreName[] danceGenreNames = DanceGenreName.values();
-        GetDanceGernreResponse getDanceGernreResponse = new GetDanceGernreResponse(danceGenreNames);
-        return ResponseEntity.ok(getDanceGernreResponse);
+        return ResponseEntity.ok(danceGenreNames);
     }
 }

@@ -3,6 +3,7 @@ package tk.wonderdance.user.model;
 import org.springframework.stereotype.Controller;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,13 +18,16 @@ public class Achievement {
     private Long id;
 
     @NotNull
+    @NotBlank
     @Column(name = "title")
     private String title;
 
     @Column(name = "dance_genre")
+    @NotNull
     private DanceGenreName danceGenre;
 
     @NotNull
+    @NotBlank
     @Column(name = "competition")
     private String competition;
 
