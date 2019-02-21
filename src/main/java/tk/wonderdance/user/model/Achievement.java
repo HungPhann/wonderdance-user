@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Entity
-@Table(name = "achievement")
+@Table(name = "user_achievement")
 public class Achievement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

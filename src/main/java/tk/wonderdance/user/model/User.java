@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Entity
-@Table(name = "user")
+@Table(name = "user_user")
 public class User extends DateAudit{
     @Id
     private Long id;
