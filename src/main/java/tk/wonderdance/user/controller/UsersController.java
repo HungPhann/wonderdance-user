@@ -1,6 +1,7 @@
 package tk.wonderdance.user.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
@@ -33,7 +34,7 @@ public class UsersController {
 
 
 
-        List<User> users = userService.findUsers(requestParams, page);
+        List<User> users = userService.findUsers(requestParams, PageRequest.of(page, 10));
         Set<Map<String, Object>> data = new HashSet<>();
 
         for (User user : users){
