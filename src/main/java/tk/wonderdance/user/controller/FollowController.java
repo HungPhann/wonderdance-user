@@ -28,7 +28,7 @@ public class FollowController {
     @Autowired
     FollowUserTransaction followUserTransaction;
 
-    @RequestMapping(value = "/follow", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/follow", method = RequestMethod.POST)
     public ResponseEntity<?> followUser(@Valid @RequestBody FollowUserRequest requestBody) throws MethodArgumentTypeMismatchException, UserNotFoundException, CustomMethodArgumentTypeMismatchException {
 
         if(requestBody.getFollower_user_id() == requestBody.getFollowing_user_id()){
