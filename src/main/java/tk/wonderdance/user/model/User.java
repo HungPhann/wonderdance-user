@@ -55,6 +55,9 @@ public class User extends DateAudit{
     @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
     private Set<Achievement> achievements = new HashSet<>();
 
+    @Column(name = "address_name")
+    private String addressName;
+
     @Column(name = "street")
     private String street;
 
@@ -147,6 +150,10 @@ public class User extends DateAudit{
                     map.put("achievements", getAchievementJson(achievements));
                     break;
 
+                case "address_name":
+                    map.put("address_name", addressName);
+                    break;
+
                 case "street":
                     map.put("street", street);
                     break;
@@ -228,6 +235,10 @@ public class User extends DateAudit{
 
                 case "gender":
                     this.gender = (char) data.get(key);
+                    break;
+
+                case "address_name":
+                    this.addressName = (String) data.get(key);
                     break;
 
                 case "street":
@@ -433,5 +444,13 @@ public class User extends DateAudit{
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getAddressName() {
+        return addressName;
+    }
+
+    public void setAddressName(String addressName) {
+        this.addressName = addressName;
     }
 }
