@@ -13,6 +13,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 import tk.wonderdance.user.exception.exception.UserNotFoundException;
+import tk.wonderdance.user.helper.StringGenerator;
 import tk.wonderdance.user.helper.aws_s3.service.S3Services;
 import tk.wonderdance.user.model.User;
 import tk.wonderdance.user.payload.profile_picture.update.UpdateProfilePictureResponse;
@@ -33,6 +34,8 @@ public class ProfilePictureController {
     @Value("${aws.s3.url}")
     private String awsS3Url;
 
+    @Autowired
+    private StringGenerator stringGenerator;
 
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<?> uploadProfilePicture(@PathVariable("user_id") long userID,
@@ -40,7 +43,7 @@ public class ProfilePictureController {
 
         try{
             User user = userRepository.findUserById(userID).get();
-            String fileName = "user/" + userID + "/profile_picture/" + userID + ".jpg";
+            String fileName = "user/" + userID + "/profile_picture/" + stringGenerator.generateString(64) + ".jpg";
             s3Services.uploadFile(fileName, profilePicture);
 
             String image_url = awsS3Url + fileName;
